@@ -1,0 +1,21 @@
+
+version: 2
+
+sources:
+  - name: bitcoin_src
+    database: bitcoin_db
+    schema: bitcoin_sch
+    tables:
+      - name: transactions
+        columns:
+          - name : hash
+            tests:
+                - not_null
+                - unique
+      - name: blocks
+        columns:
+            - name : hash
+              tests:
+                  - not_null
+                  - unique
+    
