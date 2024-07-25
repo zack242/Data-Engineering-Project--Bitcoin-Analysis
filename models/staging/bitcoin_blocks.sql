@@ -13,6 +13,6 @@ from {{source('bitcoin_src','blocks')}}
   -- this filter will only be applied on an incremental run
   -- (uses >= to include records whose timestamp occurred since the last run of this model)
   -- (If event_time is NULL or the table is truncated, the condition will always be true and load all records)
-where ingestion_timestamp >= (select coalesce(max(ingestion_timestamp),'1900-01-01') from {{ this }} )
+where ingestion_timestamp > (select coalesce(max(ingestion_timestamp),'1900-01-01') from {{ this }} )
 
 {% endif %}
