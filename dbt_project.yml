@@ -37,3 +37,6 @@ models:
     marts:
       +materialized: incremental
       snowflake_warehouse: blockchain_wh
+    facts:
+      +materialized: incremental
+      snowflake_warehouse: blockchain_wh
