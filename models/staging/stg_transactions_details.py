@@ -16,7 +16,7 @@ def model(dbt, session):
     dbt.config(packages=["pandas"])
 
     # Load the data from the referenced model
-    df = dbt.ref("bitcoin_transactions").to_pandas()
+    df = dbt.ref("stg_transactions").to_pandas()
 
     if dbt.is_incremental:
         max_from_this = f"select max(ingestion_timestamp) from {dbt.this}"
