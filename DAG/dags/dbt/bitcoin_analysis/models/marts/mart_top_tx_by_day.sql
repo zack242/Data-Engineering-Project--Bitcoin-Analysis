@@ -8,6 +8,7 @@ with data as (
 SELECT 
     DATE,
     TX_HASH_2,
-    TX_OUTPUT_VALUE 
+    TX_OUTPUT_VALUE,
+    ingestion_timestamp
 FROM data
 ORDER BY TX_OUTPUT_VALUE DESC LIMIT 10

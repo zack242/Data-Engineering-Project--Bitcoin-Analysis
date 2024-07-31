@@ -1,6 +1,7 @@
 SELECT 
     DATE,
-    COUNT(DISTINCT ADDRESS_INPUT) AS "ACTIVE_USER_COUNT"
+    SUM(TX_FEE) AS "FEES",
+    ingestion_timestamp
 FROM 
     {{ ref('stg_transactions_details') }}
 {% if is_incremental() %}
@@ -11,4 +12,4 @@ WHERE
     )
 {% endif %}
 GROUP BY 
-    DATE
+    DATE,INGESTION_TIMESTAMP

@@ -1,7 +1,8 @@
 SELECT 
     DATE,
     ADDRESS_INPUT AS "ADDRESS",
-    SUM(TX_INPUT_VALUE) AS "VOLUME_BY_USER"
+    SUM(TX_INPUT_VALUE) AS "VOLUME_BY_USER",
+    ingestion_timestamp
 FROM 
     {{ ref('stg_transactions_details') }}
 {% if is_incremental() %}
@@ -13,4 +14,5 @@ WHERE
 {% endif %}
 GROUP BY 
     DATE,
-    ADDRESS_INPUT
+    ADDRESS_INPUT,
+    INGESTION_TIMESTAMP
