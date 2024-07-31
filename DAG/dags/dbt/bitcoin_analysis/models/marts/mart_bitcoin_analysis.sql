@@ -1,7 +1,8 @@
 WITH active_users AS (
     SELECT 
         date,
-        ACTIVE_USER_COUNT
+        ACTIVE_USER_COUNT,
+        ingestion_timestamp
     FROM 
         {{ ref('fct_active_user_by_day') }}
     {% if is_incremental() %}
@@ -62,12 +63,14 @@ volume_by_day AS (
 
 SELECT 
     a.date,
+    a.ingestion_timestamp,
     a.ACTIVE_USER_COUNT,
     f.FEES,
     t.NUMBER_OF_TRANSACTIONS,
     t.NUMBER_OF_BLOCKS,
     v.VOLUME_IN,
     v.VOLUME_OUT
+
 FROM 
     active_users a
 LEFT JOIN 

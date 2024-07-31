@@ -30,7 +30,10 @@ with DAG(
         USE ROLE user_role;
         
         CREATE SCHEMA IF NOT EXISTS bitcoin_db.bitcoin_sch;
-        USE SCHEMA bitcoin_db.bitcoin_sch;        
+        USE SCHEMA bitcoin_db.bitcoin_sch;  
+        
+        CREATE OR REPLACE FILE FORMAT sf_tut_parquet_format 
+        TYPE = parquet;      
         """,
     )
 
@@ -39,6 +42,7 @@ with DAG(
         task_id='ingest_blocks_data_from_s3',
         snowflake_conn_id='snowflake_conn',
         sql="""
+        USE ROLE user_role;
         CREATE OR REPLACE TEMPORARY STAGE sf_tut_stage
         FILE_FORMAT = sf_tut_parquet_format
         URL = 's3://aws-public-blockchain/v1.0/btc/';
@@ -64,7 +68,7 @@ with DAG(
                 $1:chainwork::varchar,
                 $1:previousblockhash::varchar,
                 CURRENT_TIMESTAMP() AS ingestion_timestamp
-            FROM @sf_tut_stage/blocks/date=2024-07-01/
+            FROM @sf_tut_stage/blocks/date={{ params.date_of_ingestion }}/
         )
         FILE_FORMAT = (TYPE = parquet);
         """,
@@ -75,7 +79,9 @@ with DAG(
         task_id='ingest_transactions_data_from_s3',
         snowflake_conn_id='snowflake_conn',
         sql="""
+        USE ROLE user_role;
         CREATE OR REPLACE TEMPORARY STAGE sf_tut_stage
+        
         FILE_FORMAT = sf_tut_parquet_format
         URL = 's3://aws-public-blockchain/v1.0/btc/';
         
@@ -101,7 +107,7 @@ with DAG(
                 $1:inputs::variant,
                 $1:outputs::variant,
                 CURRENT_TIMESTAMP() AS ingestion_timestamp
-            FROM @sf_tut_stage/transactions/date=2024-07-01/
+            FROM @sf_tut_stage/transactions/date={{ params.date_of_ingestion }}/
         )
         FILE_FORMAT = (TYPE = parquet);
         """,
