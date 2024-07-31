@@ -15,9 +15,10 @@ with DAG(
     'ingestion_bitcoin_data',
     default_args=default_args,
     description='Ingest Bitcoin data into Snowflake from S3',
-    schedule_interval=None,
+    schedule_interval='0 1 * * *',  # Run daily at 1 AM
+    start_date=days_ago(1),
     catchup=False,
-    params={"date_of_ingestion": "2024-07-01"},
+    params={"date_of_ingestion": "{{ (execution_date - macros.timedelta(days=1)).strftime('%Y-%m-%d') }}"},
 ) as dag:
 
     # Task to use the warehouse and database
@@ -115,7 +116,8 @@ with DAG(
     
     trigger_child_dag = TriggerDagRunOperator(
         task_id='trigger_bitcoin_analysis',
-        trigger_dag_id='dbt_bitcoin_analysis'  # Example of passing parameters
+        trigger_dag_id='dbt_bitcoin_analysis',  # Example of passing parameters
+        conf={ "cut_off_date": "{{ params.date_of_ingestion }}"},
     )
 
     # Define task dependencies
