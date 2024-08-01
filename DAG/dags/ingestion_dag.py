@@ -1,8 +1,8 @@
 from airflow import DAG
 from airflow.providers.snowflake.operators.snowflake import SnowflakeOperator
 from airflow.utils.dates import days_ago
-from airflow.operators.dagrun_operator import TriggerDagRunOperator
-from datetime import date, datetime, timedelta
+from airflow.operators.trigger_dagrun import TriggerDagRunOperator
+from datetime import datetime, timedelta
 
 # Define the default arguments
 default_args = {
@@ -10,6 +10,10 @@ default_args = {
     'start_date': days_ago(1),
     'retries': 1,
 }
+
+# Define a function to calculate the date_of_ingestion dynamically
+def get_yesterday():
+    return (datetime.today() - timedelta(days=1)).strftime('%Y-%m-%d')
 
 # Define the DAG
 with DAG(
@@ -19,7 +23,7 @@ with DAG(
     schedule_interval='0 1 * * *',  # Run daily at 1 AM
     start_date=days_ago(1),
     catchup=False,
-    params={"date_of_ingestion": date.today() - timedelta(days=1)},
+    params={"date_of_ingestion": get_yesterday()},  # Calculate the ingestion date dynamically
 ) as dag:
 
     # Task to use the warehouse and database
@@ -30,10 +34,10 @@ with DAG(
         USE WAREHOUSE blockchain_wh;
         USE DATABASE bitcoin_db;
         USE ROLE user_role;
-        
+
         CREATE SCHEMA IF NOT EXISTS bitcoin_db.bitcoin_sch;
         USE SCHEMA bitcoin_db.bitcoin_sch;  
-        
+
         CREATE OR REPLACE FILE FORMAT sf_tut_parquet_format 
         TYPE = parquet;      
         """,
