@@ -19,8 +19,10 @@ dbt_snowflake_dag = DbtDag(
     project_config=ProjectConfig(
         "/usr/local/airflow/dags/dbt/bitcoin_analysis",
     ),
-    operator_args={"install_deps": True,
-                   "vars": {"cut_off_date": "{{ dag_run.conf['cut_off_date']  }}"}},
+    operator_args={
+        "install_deps": True,
+        "vars": {"cut_off_date": "{{ dag_run.conf['cut_off_date']  }}"},
+    },
     profile_config=profile_config,
     execution_config=ExecutionConfig(
         dbt_executable_path=f"{os.environ['AIRFLOW_HOME']}/dbt_venv/bin/dbt",

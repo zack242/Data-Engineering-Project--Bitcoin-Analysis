@@ -2,6 +2,7 @@ from airflow import DAG
 from airflow.providers.snowflake.operators.snowflake import SnowflakeOperator
 from airflow.utils.dates import days_ago
 from airflow.operators.dagrun_operator import TriggerDagRunOperator
+from datetime import date, datetime, timedelta
 
 # Define the default arguments
 default_args = {
@@ -18,7 +19,7 @@ with DAG(
     schedule_interval='0 1 * * *',  # Run daily at 1 AM
     start_date=days_ago(1),
     catchup=False,
-    params={"date_of_ingestion": "{{ (execution_date - macros.timedelta(days=1)).strftime('%Y-%m-%d') }}"},
+    params={"date_of_ingestion": date.today() - timedelta(days=1)},
 ) as dag:
 
     # Task to use the warehouse and database
