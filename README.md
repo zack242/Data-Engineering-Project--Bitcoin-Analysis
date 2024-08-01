@@ -1,7 +1,3 @@
-Sure, here is the updated README with the new sections:
-
----
-
 # Data Engineering Project - Bitcoin Analysis
 
 This repository showcases a comprehensive data engineering project focused on Bitcoin analysis. The goal was to build a data pipeline that performs analysis on Bitcoin data by ingesting parquet files from Amazon S3 into Snowflake, transforming the data with dbt, aggregating data, and computing KPIs. The orchestration of the pipelines was managed using Apache Airflow with Cosmos.
@@ -21,6 +17,12 @@ The architecture for this project was chosen to leverage the strengths of each t
 - **Snowflake** for powerful data warehousing and analytics.
 - **dbt** for efficient data transformation and modeling.
 - **Apache Airflow with Cosmos** for workflow orchestration and scheduling.
+
+### Airflow Pipline
+
+![Airflow DaG : Ingestion of Data from S3](pip1.png)
+
+![Airflow DaG : Data analysis](pip2.png)
 
 ## Prerequisites
 
@@ -54,8 +56,8 @@ Follow these steps to set up and run the project:
    pip install -r requirements.txt
    ```
 
-4. **Configure Snowflake and S3 Credentials:**
-   - Ensure your Snowflake credentials and S3 access keys are set in the environment variables or configuration files of dbt (`~/.dbt/profiles.yml`).
+4. **Configure Snowflake:**
+   - Ensure your Snowflake credentials are set in the environment variables or configuration files of dbt (`~/.dbt/profiles.yml`) and on Airflow.
 
 5. **Run the Ingestion DAG:**
    - Trigger the ingestion DAG to load data from S3 to Snowflake.
